@@ -13,7 +13,7 @@ export class User {
     /** 密码，最大长度255字符，不为空 */
     @Column()
     password: string;
-    /** 电子邮件，最大长度100字符 */
+    /** 电子邮件，最大长度100字符，不为空 */
     @Column()
     email: string;
     /** 创建时间，默认当前时间 */
@@ -27,7 +27,7 @@ export class User {
     })
     updated_at: Date;
     /** 角色，最大长度20字符 */
-    @Column()
+    @Column({ default: 'user' })
     role: string;
     /** 头像，存储头像 URL 或文件路径 */
     @Column({ default: null })
@@ -36,7 +36,7 @@ export class User {
     @Column({ default: null })
     bio: string;
     /** 性别，枚举类型 */
-    @Column()
+    @Column({ default: null })
     gender: string;
     /** 生日，存储用户的出生日期 */
     @Column({ default: null })

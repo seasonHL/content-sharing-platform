@@ -7,6 +7,24 @@ import { User } from './user.entity';
 export class UserController {
     constructor(private readonly userService: UserService) { }
 
+    @Post('create')
+    async create(@Body() body: User) {
+        if (!body.username || !body.password) {
+            throw new HttpException(failResponse('username and password are required'), HttpStatus.BAD_REQUEST);
+        }
+        const user = await this.userService.saveOne(body);
+        return successResponse(user);
+    }
+
+    @Post('delete')
+    async delete(@Body() body: User) {
+        if (!body.user_id) {
+            throw new HttpException(failResponse('user_id is required'), HttpStatus.BAD_REQUEST);
+        }
+        await this.userService.delete(pick(body, ['user_id']));
+        return successResponse('user delete successfully');
+    }
+
     @Get('find')
     async find(@Query() params: User) {
         if (!params.user_id) {
@@ -21,7 +39,7 @@ export class UserController {
         if (!body.user_id) {
             throw new HttpException(failResponse('user_id is required'), HttpStatus.BAD_REQUEST);
         }
-        await this.userService.update(body.user_id, body);
+        await this.userService.update(body.user_id, { ...body, updated_at: new Date() });
         return successResponse('user update successfully');
     }
 }
