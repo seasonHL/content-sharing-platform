@@ -9,4 +9,16 @@ export class UserService extends BaseService<User> {
     constructor(@InjectRepository(User) private readonly userRep: Repository<User>) {
         super(userRep);
     }
+
+    async findByUserId(user_id: number): Promise<User[] | null> {
+        return this.userRep.find({ where: { user_id } });
+    }
+
+    async findByUsername(username: string): Promise<User[] | null> {
+        return this.userRep.find({ where: { username } });
+    }
+
+    async findByEmail(email: string): Promise<User[] | null> {
+        return this.userRep.find({ where: { email } });
+    }
 }

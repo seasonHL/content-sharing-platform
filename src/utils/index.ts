@@ -30,7 +30,7 @@ export function failResponse(msg: string) {
  * @param keys - 要选择的键的列表
  * @returns 一个新对象，包含从原对象中选择的键值对
  */
-export function pick<T extends object, K extends keyof T>(obj: T, ...keys: K[]): Pick<T, K> {
+export function pick<T extends object, K extends keyof T>(obj: T, keys: K[]): Pick<T, K> {
     const ret: any = {};
     keys.forEach((key) => {
         if (key in obj) {

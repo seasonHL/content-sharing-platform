@@ -1,30 +1,25 @@
-import { Body, Controller, Get, HttpStatus, Post, Query, Res } from '@nestjs/common';
+import { Body, Controller, Get, HttpException, HttpStatus, Post, Query } from '@nestjs/common';
 import { UserService } from './user.service';
 import { failResponse, pick, successResponse } from 'src/utils';
 import { User } from './user.entity';
-import { Response } from 'express';
 
 @Controller('user')
 export class UserController {
     constructor(private readonly userService: UserService) { }
 
     @Get('find')
-    async find(@Query() params: User, @Res() res: Response) {
+    async find(@Query() params: User) {
         if (!params.user_id) {
-            res.status(HttpStatus.BAD_REQUEST);
-            res.send(failResponse('user_id is required'));
-            return;
+            throw new HttpException(failResponse('user_id is required'), HttpStatus.BAD_REQUEST);
         }
-        const user = await this.userService.findOne(pick(params, 'user_id'));
+        const user = await this.userService.findMany({ where: pick(params, ['user_id', 'username']) });
         return successResponse(user);
     }
 
     @Post('update')
-    async update(@Body() body: User, @Res() res: Response) {
+    async update(@Body() body: User) {
         if (!body.user_id) {
-            res.status(HttpStatus.BAD_REQUEST);
-            res.send(failResponse('user_id is required'));
-            return;
+            throw new HttpException(failResponse('user_id is required'), HttpStatus.BAD_REQUEST);
         }
         await this.userService.update(body.user_id, body);
         return successResponse('user update successfully');
