@@ -7,6 +7,10 @@ export class MediaController {
 
     @Get('list')
     async getMediaList() {
-        return await this.mediaService.getMedias();
+        const medias = await this.mediaService.getMedias();
+        return medias.map(item => ({
+            ...item,
+            post: item.post.post_id
+        }));
     }
 }

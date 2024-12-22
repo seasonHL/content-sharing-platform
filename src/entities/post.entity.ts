@@ -1,4 +1,5 @@
-import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
+import { Media } from "./media.entity";
 
 @Entity('posts')
 export class Post {
@@ -23,4 +24,6 @@ export class Post {
     /** 是否发布，布尔值，默认已发布 */
     @Column({ default: true })
     is_published: boolean;
+    @OneToMany(() => Media, media => media.post, { cascade: true })
+    media: Media[];
 }

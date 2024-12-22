@@ -16,14 +16,22 @@ export class PostService {
      * 创建帖子及其媒体内容
      */
     async createPostWithMedia(data: ICreatePost): Promise<Post> {
-        return await this.postRepository.save(data);
+        const post = this.postRepository.create({
+            ...data,
+            media: data.media.map((mediaData) =>
+                this.mediaRepository.create(mediaData),
+            ),
+        });
+        return await this.postRepository.save(post);
     }
 
     /**
      * 获取所有帖子及其关联的媒体内容
      */
     async getAllPosts(): Promise<Post[]> {
-        return await this.postRepository.find();
+        return await this.postRepository.find({
+            relations: ['media'],
+        });
     }
 
     /**

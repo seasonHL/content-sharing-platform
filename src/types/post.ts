@@ -5,5 +5,5 @@ import { Post } from "src/entities/post.entity";
  * 创建帖子请求体
  */
 export type ICreatePost = Pick<Post, 'title' | 'content' | 'author_id'> & {
-    medias: Pick<Media, 'media_url' | 'media_type'>[];
+    media: Pick<Media, 'media_url' | 'media_type'>[];
 } 
