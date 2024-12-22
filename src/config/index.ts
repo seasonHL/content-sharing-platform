@@ -1,4 +1,6 @@
 import { TypeOrmModuleOptions } from "@nestjs/typeorm";
+import { Media } from "src/entities/media.entity";
+import { Post } from "src/entities/post.entity";
 import { User } from "src/user/user.entity";
 
 export const typeormOptions: TypeOrmModuleOptions = {
@@ -8,6 +10,6 @@ export const typeormOptions: TypeOrmModuleOptions = {
     username: 'root',
     password: 'admin123',
     database: 'content_sharing_platform',
-    entities: [User],
+    entities: [User, Post, Media],
     synchronize: true,
 }

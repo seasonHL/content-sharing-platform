@@ -1,3 +1,4 @@
+import { EGender } from "src/types";
 import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
 
 /** 用户实体类 */
@@ -33,11 +34,11 @@ export class User {
     @Column({ default: null })
     avatar: string;
     /** 简介，存储用户的个人简介 */
-    @Column({ default: null })
+    @Column({ default: null, type: 'text' })
     bio: string;
     /** 性别，枚举类型 */
-    @Column({ default: null })
-    gender: string;
+    @Column({ default: null, type: 'enum', enum: ['male', 'female', 'other'] })
+    gender: EGender;
     /** 生日，存储用户的出生日期 */
     @Column({ default: null })
     birthdate: Date;
