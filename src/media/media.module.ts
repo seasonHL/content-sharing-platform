@@ -1,3 +1,7 @@
+/**
+ * @author season
+ * @description 媒体模块，帖子包含的图片或视频
+ */
 import { Module } from '@nestjs/common';
 import { MediaService } from './media.service';
 import { MediaController } from './media.controller';

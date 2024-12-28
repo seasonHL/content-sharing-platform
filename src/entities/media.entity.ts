@@ -1,6 +1,7 @@
 import { EMediaType } from "src/types";
 import { Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
 import { Post } from "./post.entity";
+import { Exclude, Expose } from "class-transformer";
 
 @Entity('media')
 export class Media {
@@ -8,13 +9,19 @@ export class Media {
     @PrimaryGeneratedColumn()
     media_id: number;
     /**
-     * 关联的帖子 ID
+     * 关联的帖子
      * TypeORM 默认会使用关联实体的字段名（即 post）作为外键列的前缀，并附加一个“Id”后缀
      * 如果你没有明确指定外键列名，生成的外键列可能是 postId（而不是 post_id），即使用关联实体（Post）的名称。
      */
+    @Exclude()// 排除该属性
     @ManyToOne(() => Post, post => post.media, { onDelete: 'CASCADE', onUpdate: 'CASCADE' })
     @JoinColumn({ name: 'post_id' })  // 显式指定外键列名为 'post_id'
     post: Post;
+    /** 关联的帖子 ID */
+    @Expose()// 暴露该属性
+    get post_id(): number {
+        return this.post?.post_id;
+    }
     /** 媒体文件 URL（图片或视频） */
     @Column({ length: 255 })
     media_url: string;
