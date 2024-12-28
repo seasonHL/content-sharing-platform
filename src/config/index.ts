@@ -1,3 +1,4 @@
+import { ConfigModuleOptions } from "@nestjs/config";
 import { TypeOrmModuleOptions } from "@nestjs/typeorm";
 import { Media } from "src/entities/media.entity";
 import { Post } from "src/entities/post.entity";
@@ -13,3 +14,8 @@ export const typeormOptions: TypeOrmModuleOptions = {
     entities: [User, Post, Media],
     synchronize: true,
 }
+
+export const configOptions: ConfigModuleOptions = {
+    isGlobal: true,
+    envFilePath: ['.env.development', '.env.production']
+} 
