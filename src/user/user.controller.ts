@@ -2,11 +2,13 @@ import { Body, Controller, Get, HttpException, HttpStatus, Post, Query } from '@
 import { UserService } from './user.service';
 import { failResponse, pick, successResponse } from 'src/utils';
 import { User } from '../entities/user.entity';
+import { Public } from 'src/auth/auth.guard';
 
 @Controller('user')
 export class UserController {
     constructor(private readonly userService: UserService) { }
 
+    @Public()
     @Post('create')
     async create(@Body() body: User) {
         if (!body.username || !body.password) {

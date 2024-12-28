@@ -45,7 +45,7 @@ export function pick<T extends object, K extends keyof T>(obj: T, keys: K[]): Pi
  * @param keys - 要排除的键的列表
  * @returns 一个新对象，包含从原对象中排除的键值对
  */
-export function omit<T extends object, K extends keyof T>(obj: T, ...keys: K[]): Omit<T, K> {
+export function omit<T extends object, K extends keyof T>(obj: T, keys: K[]): Omit<T, K> {
     const ret: any = { ...obj };
     keys.forEach((key) => {
         if (key in ret) {
