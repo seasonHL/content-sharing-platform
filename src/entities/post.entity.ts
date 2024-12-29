@@ -24,6 +24,7 @@ export class Post {
     /** 是否发布，布尔值，默认已发布 */
     @Column({ default: true })
     is_published: boolean;
+    /** 媒体关联，一对多关系，级联删除 */
     @OneToMany(() => Media, media => media.post, { cascade: true })
     media: Media[];
 }
