@@ -15,8 +15,18 @@ export class MessageService extends BaseService<Message> {
     /**
      * 储存消息
      */
-    async saveMessage(data: Pick<Message, 'content' | 'receiver_id' | 'sender_id'>): Promise<Message> {
-        return await this.messageRep.save(data);
+    async saveMessage(data: Pick<Message, 'content' | 'receiver_id' | 'sender_id'>) {
+        await Promise.all([
+            this.messageRep.save({
+                ...data,
+                user_id: data.sender_id
+            }),
+            this.messageRep.save({
+                ...data,
+                user_id: data.receiver_id
+            })
+        ])
+        return true
     }
     /**
      * 清空消息
@@ -35,6 +45,7 @@ export class MessageService extends BaseService<Message> {
      */
     async getMessageList(data: Pick<Message, 'receiver_id' | 'sender_id'>) {
         return await this.messageRep.find({
+            relations: ['user'],
             where: data,
             order: {
                 createdAt: 'DESC'

@@ -3,6 +3,7 @@ import { Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from "t
 import { Post } from "./post.entity";
 import { Exclude, Expose } from "class-transformer";
 
+/** 媒体实体类 */
 @Entity('media')
 export class Media {
     /** 媒体 ID，自增长，主键 */

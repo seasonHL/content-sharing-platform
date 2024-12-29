@@ -9,7 +9,7 @@ export class AuthService {
         private usersService: UserService,
         private jwtService: JwtService,
     ) { }
-    async signIn(username: string, pass: string): Promise<any> {
+    async signIn(username: string, pass: string) {
         const user = await this.usersService.findOne({ username });
         if (user?.password !== pass) {
             throw new UnauthorizedException("账号或密码错误");

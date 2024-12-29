@@ -1,9 +1,15 @@
 import { EGender } from "src/types";
-import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
+import { Message } from "./message.entity";
 
+class UserRelation {
+    /** 消息列表，一对多关系 */
+    @OneToMany(() => Message, (message) => message.user)
+    messages: Message[]
+}
 /** 用户实体类 */
 @Entity('users')
-export class User {
+export class User extends UserRelation {
     /** 用户ID，自增长，主键 */
     @PrimaryGeneratedColumn()
     user_id: number;

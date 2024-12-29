@@ -1,8 +1,14 @@
 import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 import { Media } from "./media.entity";
 
+class PostRelation {
+    /** 媒体关联，一对多关系，级联删除 */
+    @OneToMany(() => Media, media => media.post, { cascade: true })
+    media: Media[];
+}
+/** 帖子实体类 */
 @Entity('posts')
-export class Post {
+export class Post extends PostRelation {
     /** 帖子ID，自增长，主键 */
     @PrimaryGeneratedColumn()
     post_id: number;
@@ -24,7 +30,4 @@ export class Post {
     /** 是否发布，布尔值，默认已发布 */
     @Column({ default: true })
     is_published: boolean;
-    /** 媒体关联，一对多关系，级联删除 */
-    @OneToMany(() => Media, media => media.post, { cascade: true })
-    media: Media[];
 }
