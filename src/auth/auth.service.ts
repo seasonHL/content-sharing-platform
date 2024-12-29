@@ -17,7 +17,9 @@ export class AuthService {
 
         const payload = pick(user, ['user_id', 'username']);
         return {
-            access_token: await this.jwtService.signAsync(payload),
+            access_token: await this.jwtService.signAsync(payload, {
+                secret: 'secret',
+            }),
         };
     }
 }

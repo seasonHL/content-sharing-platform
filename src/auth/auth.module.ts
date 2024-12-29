@@ -8,7 +8,6 @@ import { AuthGuard } from './auth.guard';
 @Module({
   imports: [JwtModule.register({
     global: true,
-    secret: 'secret',
     signOptions: { expiresIn: '1d' },
   }), UserModule],
   controllers: [AuthController],
