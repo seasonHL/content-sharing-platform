@@ -19,4 +19,8 @@ export const typeormOptions: TypeOrmModuleOptions = {
 export const configOptions: ConfigModuleOptions = {
     isGlobal: true,
     envFilePath: ['.env.development', '.env.production']
-} 
+}
+
+export const jwtOptions = {
+    secret: 'secret',
+}

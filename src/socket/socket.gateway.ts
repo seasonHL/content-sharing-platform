@@ -2,6 +2,7 @@ import { Logger } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { ConnectedSocket, MessageBody, OnGatewayConnection, OnGatewayDisconnect, SubscribeMessage, WebSocketGateway, WebSocketServer } from '@nestjs/websockets';
 import type { Server, Socket } from 'socket.io';
+import { jwtOptions } from 'src/config';
 import { MessageService } from 'src/message/message.service';
 import { MessageData } from 'src/types/socket';
 @WebSocketGateway()
@@ -21,9 +22,7 @@ export class SocketGateway implements OnGatewayConnection, OnGatewayDisconnect {
       }
       Logger.log(`client connected: ${socket.id}`, 'SocketGateway')
       // 验证token
-      const payload = this.jwtService.verify(token, {
-        secret: 'secret'
-      });
+      const payload = this.jwtService.verify(token, jwtOptions);
       // 储存用户id
       socket.data.user_id = payload.user_id;
       this.users.set(payload.user_id, socket.id);
