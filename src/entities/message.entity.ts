@@ -20,10 +20,10 @@ export class Message extends MessageRelation {
     @Column()
     sender_id: number;
     /** 接收者 ID */
-    @Column()
+    @Column({ nullable: true })
     receiver_id: number;
     /** 群组 ID */
-    @Column()
+    @Column({ nullable: true })
     group_id: number
     /** 消息内容 */
     @Column()
