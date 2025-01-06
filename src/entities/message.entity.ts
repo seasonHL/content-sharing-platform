@@ -1,10 +1,8 @@
 import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn } from 'typeorm';
 import { User } from './user.entity';
-import { Exclude } from 'class-transformer';
 
 export class MessageRelation {
     /** 关联的用户 */
-    @Exclude()// 排除该属性
     @JoinColumn({ name: 'user_id' })
     @ManyToOne(() => User, (user) => user.messages)
     user: User;
