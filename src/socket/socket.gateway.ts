@@ -18,7 +18,7 @@ export class SocketGateway implements OnGatewayConnection, OnGatewayDisconnect {
       // 验证token
       const token = socket.handshake.auth.token || socket.handshake.query.token;
       if (!token) {
-        return;
+        throw new Error('unauthorized')
       }
       Logger.log(`client connected: ${socket.id}`, 'SocketGateway')
       // 验证token
@@ -37,7 +37,7 @@ export class SocketGateway implements OnGatewayConnection, OnGatewayDisconnect {
     this.users.delete(socket.data.user_id);
   }
   /**
-   * 私聊消息
+   * @description 私聊消息
    */
   @SubscribeMessage('message')
   async handleMessage(@MessageBody() data: MessageData, @ConnectedSocket() client: Socket) {
@@ -58,7 +58,15 @@ export class SocketGateway implements OnGatewayConnection, OnGatewayDisconnect {
       Logger.log(`User is offline: ${data.receiver_id}`, 'SocketGateway')
     }
   }
+  /**
+   * @todo 群聊消息
+   */
+  @SubscribeMessage('group')
+  async handleGroupMessage() { }
 
+  /**
+   * @description 心跳消息
+   */
   @SubscribeMessage('heartbeat')
   handleHeartbeat(@ConnectedSocket() client: Socket) {
     client.emit('heartbeat', 'heartbeat');

@@ -13,7 +13,8 @@ export class MessageController {
         return this.messageService.findAll();
     }
     /**
-     * 删除指定消息
+     * @param id 消息 id
+     * @description 删除指定消息
      */
     @Post('delete')
     async deleteMessage(@Body('id') id: number | number[]) {
@@ -21,6 +22,7 @@ export class MessageController {
         return successResponse(`成功删除${affected}条消息`);
     }
     /**
+     * @todo
      * 清空消息
      */
     @Get('clear')

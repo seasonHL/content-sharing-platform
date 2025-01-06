@@ -22,6 +22,9 @@ export class Message extends MessageRelation {
     /** 接收者 ID */
     @Column()
     receiver_id: number;
+    /** 群组 ID */
+    @Column()
+    group_id: number
     /** 消息内容 */
     @Column()
     content: string;
