@@ -12,6 +12,8 @@ export class SocketGateway implements OnGatewayConnection, OnGatewayDisconnect {
   server: Server;
   /** 用户ID到socket.id的映射 */
   private users: Map<number, string> = new Map();
+  /** 群组ID到用户ID的映射 */
+  private groups: Map<string, string[]> = new Map();
   constructor(private readonly jwtService: JwtService, private readonly msgService: MessageService) { }
   handleConnection(@ConnectedSocket() socket: Socket) {
     try {
@@ -26,6 +28,8 @@ export class SocketGateway implements OnGatewayConnection, OnGatewayDisconnect {
       // 储存用户id
       socket.data.user_id = payload.user_id;
       this.users.set(payload.user_id, socket.id);
+      // 加入房间
+      socket.join('room');
     } catch (error) {
       Logger.error(error, 'SocketGateway')
       socket.disconnect();
@@ -37,6 +41,7 @@ export class SocketGateway implements OnGatewayConnection, OnGatewayDisconnect {
     this.users.delete(socket.data.user_id);
   }
   /**
+   * @todo 离线消息储存
    * @description 私聊消息
    */
   @SubscribeMessage('message')
@@ -62,7 +67,19 @@ export class SocketGateway implements OnGatewayConnection, OnGatewayDisconnect {
    * @todo 群聊消息
    */
   @SubscribeMessage('group')
-  async handleGroupMessage() { }
+  async handleGroupMessage(@MessageBody() data: MessageData, @ConnectedSocket() client: Socket) {
+    const user_id = client.data.user_id;
+    const msg = {
+      ...data,
+      sender_id: user_id,
+      groupId: 'room'
+    }
+    // 储存消息
+    // this.msgService.saveMessage(msg)
+    // 广播消息给所有在线用户
+    client.to('room').emit('group', msg);
+
+  }
 
   /**
    * @description 心跳消息

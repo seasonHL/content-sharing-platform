@@ -2,12 +2,16 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { BaseService } from 'src/common/base.service';
 import { Group } from 'src/entities';
+import { UserGroupService } from 'src/user-group/user-group.service';
 import { Repository } from 'typeorm';
 
 @Injectable()
 export class GroupService extends BaseService<Group> {
 
-    constructor(@InjectRepository(Group) private groupRep: Repository<Group>) {
+    constructor(
+        @InjectRepository(Group) private readonly groupRep: Repository<Group>,
+        private readonly userGroupService: UserGroupService,
+    ) {
         super(groupRep);
     }
     /**
@@ -26,7 +30,7 @@ export class GroupService extends BaseService<Group> {
      */
     async join(data) {
         console.log(data);
-        throw new Error('Method not implemented.');
+        return this.userGroupService.saveOne(data);
     }
     /**
      * 退出一个群组
