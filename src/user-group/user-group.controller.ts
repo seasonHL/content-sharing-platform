@@ -1,4 +1,4 @@
-import { Body, Controller, Post } from '@nestjs/common';
+import { Body, Controller, Get, Post, Query } from '@nestjs/common';
 import { UserGroupService } from './user-group.service';
 import { UserGroup } from 'src/entities';
 
@@ -19,5 +19,15 @@ export class UserGroupController {
     @Post('change-role')
     async changeRole(@Body() data) {
         return await this.userGroupService.changeRole(data);
+    }
+
+    @Get('users')
+    async findUsersByGroupId(@Query('groupId') groupId: number) {
+        return await this.userGroupService.findUserByGroupId(groupId);
+    }
+
+    @Get('groups')
+    async findGroupsByUserId(@Query('userId') userId: number) {
+        return await this.userGroupService.findGroupByUserId(userId);
     }
 }

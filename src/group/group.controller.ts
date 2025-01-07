@@ -16,7 +16,6 @@ export class GroupController {
         return group;
     }
     /**
-     * @todo
      * @param data 群组信息
      * @description 加入群组
      */
@@ -26,7 +25,6 @@ export class GroupController {
         return group;
     }
     /**
-     * @todo
      * @param data 群组信息
      * @description 退出群组
      */

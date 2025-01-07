@@ -5,6 +5,7 @@ import type { Server, Socket } from 'socket.io';
 import { jwtOptions } from 'src/config';
 import { MessageService } from 'src/message/message.service';
 import { MessageData } from 'src/types/socket';
+import { UserGroupService } from 'src/user-group/user-group.service';
 @WebSocketGateway()
 export class SocketGateway implements OnGatewayConnection, OnGatewayDisconnect {
   /** 注入socket服务 */
@@ -14,8 +15,12 @@ export class SocketGateway implements OnGatewayConnection, OnGatewayDisconnect {
   private users: Map<number, string> = new Map();
   /** 群组ID到用户ID的映射 */
   private groups: Map<string, string[]> = new Map();
-  constructor(private readonly jwtService: JwtService, private readonly msgService: MessageService) { }
-  handleConnection(@ConnectedSocket() socket: Socket) {
+  constructor(
+    private readonly jwtService: JwtService,
+    private readonly msgService: MessageService,
+    private readonly userGroupService: UserGroupService
+  ) { }
+  async handleConnection(@ConnectedSocket() socket: Socket) {
     try {
       // 验证token
       const token = socket.handshake.auth.token || socket.handshake.query.token;
@@ -28,8 +33,9 @@ export class SocketGateway implements OnGatewayConnection, OnGatewayDisconnect {
       // 储存用户id
       socket.data.user_id = payload.user_id;
       this.users.set(payload.user_id, socket.id);
-      // 加入房间
-      socket.join('room');
+      // 加入群组
+      const userGroups = await this.userGroupService.findGroupByUserId(payload.user_id)
+      socket.join(userGroups.map(group => group.groupId.toFixed()))
     } catch (error) {
       Logger.error(error, 'SocketGateway')
       socket.disconnect();
@@ -45,7 +51,7 @@ export class SocketGateway implements OnGatewayConnection, OnGatewayDisconnect {
    * @description 私聊消息
    */
   @SubscribeMessage('message')
-  async handleMessage(@MessageBody() data: MessageData, @ConnectedSocket() client: Socket) {
+  async handleMessage(@MessageBody() data: MessageData & Required<Pick<MessageData, 'receiver_id'>>, @ConnectedSocket() client: Socket) {
     const user_id = client.data.user_id;
     const msg = {
       ...data,
@@ -67,18 +73,26 @@ export class SocketGateway implements OnGatewayConnection, OnGatewayDisconnect {
    * @todo 群聊消息
    */
   @SubscribeMessage('group')
-  async handleGroupMessage(@MessageBody() data: MessageData, @ConnectedSocket() client: Socket) {
+  async handleGroupMessage(@MessageBody() data: MessageData & Required<Pick<MessageData, 'group_id'>>, @ConnectedSocket() client: Socket) {
     const user_id = client.data.user_id;
     const msg = {
       ...data,
       sender_id: user_id,
-      groupId: 'room'
     }
-    // 储存消息
-    // this.msgService.saveMessage(msg)
-    // 广播消息给所有在线用户
-    client.to('room').emit('group', msg);
-
+    console.log(data);
+    const groupUsers = await this.userGroupService.findUserByGroupId(data.group_id)
+    groupUsers.forEach(user => {
+      if (user.userId !== user_id) {
+        const receiverSocketId = this.users.get(user.userId);
+        if (receiverSocketId) {
+          // 通过 receiverSocketId 向接收者发送消息
+          this.server.to(receiverSocketId).emit('group', msg);
+        } else {
+          // 如果接收者没有在线，可以选择存储离线消息等
+          Logger.log(`User is offline: ${user.userId}`, 'SocketGateway')
+        }
+      }
+    })
   }
 
   /**

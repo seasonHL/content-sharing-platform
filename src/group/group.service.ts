@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { BaseService } from 'src/common/base.service';
-import { Group } from 'src/entities';
+import { Group, UserGroup } from 'src/entities';
 import { UserGroupService } from 'src/user-group/user-group.service';
 import { Repository } from 'typeorm';
 
@@ -28,17 +28,15 @@ export class GroupService extends BaseService<Group> {
      * @param data - 包含群组ID和用户ID的对象
      * @returns 加入成功后的群组对象
      */
-    async join(data) {
-        console.log(data);
-        return this.userGroupService.saveOne(data);
+    async join(data: Pick<UserGroup, 'groupId' | 'userId'>) {
+        return this.userGroupService.joinGroup(data);
     }
     /**
      * 退出一个群组
      * @param data - 包含群组ID和用户ID的对象
      * @returns 退出成功后的群组对象
      */
-    async quit(data) {
-        console.log(data);
-        throw new Error('Method not implemented.');
+    async quit(data: Pick<UserGroup, 'groupId' | 'userId'>) {
+        return this.userGroupService.quitGroup(data);
     }
 }
