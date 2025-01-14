@@ -1,10 +1,15 @@
-import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 import { Media } from "./media.entity";
+import { User } from "./user.entity";
 
 class PostRelation {
     /** 媒体关联，一对多关系，级联删除 */
     @OneToMany(() => Media, media => media.post, { cascade: true })
     media: Media[];
+    /** 用户关联，多对一关系 */
+    @ManyToOne(() => User, user => user.posts)
+    @JoinColumn({ name: 'author_id' })
+    author: User;
 }
 /** 帖子实体类 */
 @Entity('posts')

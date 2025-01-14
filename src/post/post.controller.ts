@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post } from '@nestjs/common';
+import { Body, Controller, Get, Post, Query } from '@nestjs/common';
 import { PostService } from './post.service';
 import { ICreatePost } from 'src/types/post';
 
@@ -14,5 +14,30 @@ export class PostController {
     @Post('create')
     async createPost(@Body() data: ICreatePost) {
         return await this.postService.createPostWithMedia(data);
+    }
+
+    @Get('detail')
+    async getPostDetail(@Query('post_id') post_id: number) {
+        return await this.postService.getPostById(post_id);
+    }
+
+    @Post('like')
+    async likePost() {
+        return await this.postService.likePost();
+    }
+
+    @Post('comment')
+    async commentPost() {
+        return await this.postService.commentPost();
+    }
+
+    @Post('share')
+    async sharePost() {
+        return await this.postService.sharePost();
+    }
+
+    @Post('delete')
+    async deletePost(@Query('post_id') post_id: number) {
+        return await this.postService.deletePost(post_id);
     }
 }

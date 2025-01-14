@@ -40,6 +40,19 @@ export class PostService {
     async getPostById(post_id: number): Promise<Post> {
         return await this.postRepository.findOne({
             where: { post_id },
+            relations: ['media', 'author'],
         });
+    }
+    async likePost() {
+        throw new Error('Method not implemented.');
+    }
+    async commentPost() {
+        throw new Error('Method not implemented.');
+    }
+    async sharePost() {
+        throw new Error('Method not implemented.');
+    }
+    async deletePost(id: number) {
+        this.postRepository.delete(id);
     }
 }
