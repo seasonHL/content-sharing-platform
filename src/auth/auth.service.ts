@@ -21,4 +21,15 @@ export class AuthService {
             access_token: await this.jwtService.signAsync(payload, jwtOptions),
         };
     }
+
+    async verifyToken(token: string) {
+        return this.jwtService.verifyAsync(token, jwtOptions);
+    }
+
+    async refreshToken(token: string) {
+        const payload = await this.verifyToken(token);
+        const access_token = await this.jwtService.signAsync(payload, jwtOptions);
+        const refresh_token = await this.jwtService.signAsync(payload, { ...jwtOptions, expiresIn: '1d' });
+        return { access_token, refresh_token };
+    }
 }
