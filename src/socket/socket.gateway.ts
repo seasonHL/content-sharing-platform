@@ -3,6 +3,7 @@ import { JwtService } from '@nestjs/jwt';
 import { ConnectedSocket, MessageBody, OnGatewayConnection, OnGatewayDisconnect, SubscribeMessage, WebSocketGateway, WebSocketServer } from '@nestjs/websockets';
 import type { Server, Socket } from 'socket.io';
 import { jwtOptions } from 'src/config';
+import { ConversationService } from 'src/conversation/conversation.service';
 import { MessageService } from 'src/message/message.service';
 import { MessageData } from 'src/types/socket';
 import { UserGroupService } from 'src/user-group/user-group.service';
@@ -18,7 +19,8 @@ export class SocketGateway implements OnGatewayConnection, OnGatewayDisconnect {
   constructor(
     private readonly jwtService: JwtService,
     private readonly msgService: MessageService,
-    private readonly userGroupService: UserGroupService
+    private readonly userGroupService: UserGroupService,
+    private readonly conversationService: ConversationService,
   ) { }
   async handleConnection(@ConnectedSocket() socket: Socket) {
     try {
@@ -67,6 +69,12 @@ export class SocketGateway implements OnGatewayConnection, OnGatewayDisconnect {
     } else {
       // 如果接收者没有在线，可以选择存储离线消息等
       Logger.log(`User is offline: ${data.receiver_id}`, 'SocketGateway')
+      const { conversation_id } = await this.conversationService.findOne({
+        user_id: data.receiver_id,
+        friend_id: user_id,
+      })
+
+      if (conversation_id) this.msgService.saveMessage({ ...msg, conversation_id })
     }
   }
   /**

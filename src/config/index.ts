@@ -1,6 +1,7 @@
 import { ConfigModuleOptions } from "@nestjs/config";
 import { TypeOrmModuleOptions } from "@nestjs/typeorm";
 import { Group, Media, Message, Post, Product, User, UserGroup } from "src/entities";
+import { Conversation } from "src/entities/conversation.entity";
 
 export const typeormOptions: TypeOrmModuleOptions = {
     type: 'mysql',
@@ -9,7 +10,7 @@ export const typeormOptions: TypeOrmModuleOptions = {
     username: 'root',
     password: 'admin123',
     database: 'content_sharing_platform',
-    entities: [User, Post, Media, Message, Group, UserGroup, Product],
+    entities: [User, Post, Media, Message, Group, UserGroup, Product, Conversation],
     synchronize: true,
 }
 

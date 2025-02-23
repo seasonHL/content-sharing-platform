@@ -1,11 +1,11 @@
 import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn } from 'typeorm';
-import { User } from './user.entity';
+import { Conversation } from './conversation.entity';
 
 export class MessageRelation {
-    /** 关联的用户 */
-    @JoinColumn({ name: 'user_id' })
-    @ManyToOne(() => User, (user) => user.messages)
-    user: User;
+    /** 关联的会话 */
+    @JoinColumn({ name: 'conversation_id' })
+    @ManyToOne(() => Conversation, (user) => user.messages)
+    conversation: Conversation;
 }
 
 /** 消息实体类 */
@@ -32,7 +32,7 @@ export class Message extends MessageRelation {
     /** 消息状态 */
     @Column({ default: false })
     isRead: boolean;
-    /** 关联的用户 ID */
-    @Column({ name: 'user_id' })
-    user_id: number;
+    /** 会话 ID */
+    @Column({ name: 'conversation_id' })
+    conversation_id: number;
 }

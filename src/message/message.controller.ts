@@ -32,4 +32,14 @@ export class MessageController {
         });
         return successResponse(`成功清空${affected}条消息`);
     }
+    /**
+     * @param data 消息数据
+     * @description 储存消息
+     */
+    @Post('save')
+    async saveMessage(@Body() data: Pick<Message, 'content' | 'receiver_id' | 'sender_id' | 'conversation_id'>) {
+        if (data.receiver_id) {
+            await this.messageService.saveMessage(data);
+        }
+    }
 }

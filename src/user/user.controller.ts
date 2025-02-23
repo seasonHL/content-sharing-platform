@@ -44,4 +44,10 @@ export class UserController {
         await this.userService.update(body.user_id, { ...body, updated_at: new Date() });
         return successResponse('user update successfully');
     }
+
+    @Get('list')
+    async list() {
+        const users = await this.userService.findAll();
+        return successResponse(users);
+    }
 }
