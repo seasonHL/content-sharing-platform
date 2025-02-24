@@ -11,4 +11,15 @@ export class ConversationService extends BaseService<Conversation> {
     ) {
         super(conversationRep);
     }
+
+    getDetails(conversation_id: number) {
+        return this.conversationRep.findOne({
+            relations: {
+                messages: true,
+            },
+            where: {
+                conversation_id,
+            }
+        });
+    }
 }

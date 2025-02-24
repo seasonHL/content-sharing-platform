@@ -63,18 +63,19 @@ export class SocketGateway implements OnGatewayConnection, OnGatewayDisconnect {
     this.msgService.saveMessage(msg)
     // 查找接收者的socket.id
     const receiverSocketId = this.users.get(data.receiver_id);
+    // 查找会话id
+    const { conversation_id } = await this.conversationService.findOne({
+      user_id: data.receiver_id,
+      friend_id: user_id,
+    })
+    if (conversation_id) this.msgService.saveMessage({ ...msg, conversation_id })
+
     if (receiverSocketId) {
       // 通过 receiverSocketId 向接收者发送消息
       this.server.to(receiverSocketId).emit('message', msg);
     } else {
       // 如果接收者没有在线，可以选择存储离线消息等
       Logger.log(`User is offline: ${data.receiver_id}`, 'SocketGateway')
-      const { conversation_id } = await this.conversationService.findOne({
-        user_id: data.receiver_id,
-        friend_id: user_id,
-      })
-
-      if (conversation_id) this.msgService.saveMessage({ ...msg, conversation_id })
     }
   }
   /**

@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post } from '@nestjs/common';
+import { Body, Controller, Get, Post, Query } from '@nestjs/common';
 import { ConversationService } from './conversation.service';
 import { Conversation } from 'src/entities/conversation.entity';
 import { pick, successResponse } from 'src/utils';
@@ -18,14 +18,25 @@ export class ConversationController {
      * 获取会话列表
      */
     @Get('list')
-    async getConversationList() {
-        return await this.conversationService.findAll();
+    async getConversationList(@Query('user_id') user_id: number) {
+        let list = [];
+        if (user_id) {
+            list = await this.conversationService.findMany({
+                where: {
+                    user_id
+                }
+            });
+        } else {
+            list = await this.conversationService.findAll();
+        }
+        return successResponse(list);
     }
     /**
      * 获取会话详情
      */
-    async getConversationDetail() {
-
+    @Get('detail')
+    async getConversationDetail(@Query('id') conversation_id: number) {
+        return await this.conversationService.getDetails(conversation_id);
     }
     /**
      * 删除会话
