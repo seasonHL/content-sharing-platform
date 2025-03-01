@@ -68,8 +68,9 @@ export class SocketGateway implements OnGatewayConnection, OnGatewayDisconnect {
       user_id: data.receiver_id,
       friend_id: user_id,
     })
-    if (conversation_id) this.msgService.saveMessage({ ...msg, conversation_id })
-
+    if (conversation_id) {
+      this.msgService.saveMessage({ ...msg, conversation_id })
+    }
     if (receiverSocketId) {
       // 通过 receiverSocketId 向接收者发送消息
       this.server.to(receiverSocketId).emit('message', msg);
