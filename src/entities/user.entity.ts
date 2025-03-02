@@ -1,11 +1,15 @@
 import { EGender } from "src/types";
 import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 import { Post } from "./post.entity";
+import { EComment } from "./comment.entity";
 
 class UserRelation {
     /** 帖子列表，一对多关系 */
     @OneToMany(() => Post, (post) => post.author)
     posts: Post[]
+    /** 评论列表，一对多关系 */
+    @OneToMany(() => EComment, (comment) => comment.user)
+    comments: EComment[];
 }
 /** 用户实体类 */
 @Entity('users')

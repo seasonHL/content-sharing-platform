@@ -12,9 +12,10 @@ import { GroupModule } from './group/group.module';
 import { UserGroupModule } from './user-group/user-group.module';
 import { ProductModule } from './product/product.module';
 import { ConversationModule } from './conversation/conversation.module';
+import { CommentModule } from './comment/comment.module';
 
 @Module({
-  imports: [ConfigModule.forRoot(configOptions), TypeOrmModule.forRoot(typeormOptions), UserModule, SocketModule, PostModule, MediaModule, AuthModule, MessageModule, GroupModule, UserGroupModule, ProductModule, ConversationModule],
+  imports: [ConfigModule.forRoot(configOptions), TypeOrmModule.forRoot(typeormOptions), UserModule, SocketModule, PostModule, MediaModule, AuthModule, MessageModule, GroupModule, UserGroupModule, ProductModule, ConversationModule, CommentModule],
   controllers: [],
   providers: [],
 })

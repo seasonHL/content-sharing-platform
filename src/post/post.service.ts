@@ -34,6 +34,13 @@ export class PostService {
         });
     }
 
+    async getPostsByUserId(author_id: number) {
+        return this.postRepository.find({
+            where: { author_id },
+            relations: ['media', 'author'],
+        });
+    }
+
     /**
      * 获取帖子及其关联的媒体内容
      */

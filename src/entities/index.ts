@@ -5,3 +5,5 @@ export { Post } from "./post.entity";
 export { User } from "./user.entity";
 export { UserGroup } from "./userGroup.entity";
 export { Product } from './products.entity'
+export { Conversation } from './conversation.entity'
+export { EComment as Comment } from './comment.entity'

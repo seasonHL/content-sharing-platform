@@ -7,7 +7,10 @@ export class PostController {
     constructor(private readonly postService: PostService) { }
 
     @Get('list')
-    async getPostList() {
+    async getPostList(@Query('user_id') user_id: number) {
+        if (user_id) {
+            return await this.postService.getPostsByUserId(user_id);
+        }
         return await this.postService.getAllPosts();
     }
 

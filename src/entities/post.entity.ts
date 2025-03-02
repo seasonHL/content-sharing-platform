@@ -1,6 +1,7 @@
 import { Column, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 import { Media } from "./media.entity";
 import { User } from "./user.entity";
+import { EComment } from "./comment.entity";
 
 class PostRelation {
     /** 媒体关联，一对多关系，级联删除 */
@@ -10,6 +11,9 @@ class PostRelation {
     @ManyToOne(() => User, user => user.posts)
     @JoinColumn({ name: 'author_id' })
     author: User;
+    /** 评论关联，一对多关系 */
+    @OneToMany(() => EComment, comment => comment.post)
+    comments: EComment[];
 }
 /** 帖子实体类 */
 @Entity('posts')
