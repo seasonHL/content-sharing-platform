@@ -3,7 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { BaseService } from 'src/common/base.service';
 import { EComment } from 'src/entities/comment.entity';
 import { ICreateComment } from 'src/types/comment';
-import { Repository } from 'typeorm';
+import { IsNull, Repository } from 'typeorm';
 
 @Injectable()
 export class CommentService extends BaseService<EComment> {
@@ -15,13 +15,27 @@ export class CommentService extends BaseService<EComment> {
         super(commentRep);
     }
 
-    async getCommentList(post_id: number, parent_comment_id: number) {
-        return await this.commentRep.find({
-            where: {
-                post_id,
-                parent_comment_id
-            }
-        })
+    /**
+     * 获取评论列表
+     */
+    async getComments(postId: number) {
+        return this.commentRep.find({
+            // 只查询顶级评论，即 parent_comment_id 为 null 的评论
+            where: { post_id: postId, parent_comment_id: IsNull() },
+            relations: ['user', 'replyList'],
+        });
+    }
+
+    /**
+     * 获取指定评论的回复列表
+     * @param commentId - 评论的 ID
+     * @returns 返回指定评论的回复列表
+     */
+    async getReplies(commentId: number) {
+        return this.commentRep.find({
+            where: { parent_comment_id: commentId },
+            relations: ['user', 'replyList', 'targetComment', 'targetComment.user'],
+        });
     }
     /**
      * 获取指定帖子的评论数量
@@ -37,18 +51,12 @@ export class CommentService extends BaseService<EComment> {
         })
     }
 
-    async createComment({
-        post_id,
-        parent_comment_id,
-        user_id,
-        comment_text
-    }: ICreateComment) {
-        const comment = this.commentRep.create({
-            post_id,
-            parent_comment_id,
-            user_id,
-            comment_text,
-        })
-        return await this.commentRep.save(comment);
+    async createComment(data: ICreateComment) {
+        try {
+            const comment = this.commentRep.create(data)
+            return await this.commentRep.save(comment);
+        } catch (error) {
+            return error;
+        }
     }
 }
