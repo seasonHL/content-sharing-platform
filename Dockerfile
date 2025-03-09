@@ -2,7 +2,7 @@
 FROM node:20-alpine
 
 # 安装 pnpm
-RUN npm install -g pnpm
+RUN npm install -g pnpm@8
 
 # 设置工作目录
 WORKDIR /app
