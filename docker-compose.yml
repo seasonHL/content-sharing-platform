@@ -10,7 +10,7 @@ services:
       - '3000:3000'
     restart: always
     environment:
-      - DATABASE_HOST=db
+      - DATABASE_HOST=${HOST_IP}
       - DATABASE_PORT=3306
       - DATABASE_USER=root
       - DATABASE_PASSWORD=admin123

@@ -4,7 +4,7 @@ import { Group, Media, Message, Post, Product, User, UserGroup, Conversation, Co
 
 export const typeormOptions: TypeOrmModuleOptions = {
     type: 'mysql',
-    host: 'localhost',
+    host: '123.56.81.201',
     port: 3306,
     username: 'root',
     password: 'admin123',
