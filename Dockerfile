@@ -1,6 +1,5 @@
 # 使用 Node.js 20 基础镜像
-ARG REGISTRY_MIRROR
-FROM ${REGISTRY_MIRROR}/node:20-alpine
+FROM node:20-alpine
 
 # 安装 pnpm
 RUN npm install -g pnpm
