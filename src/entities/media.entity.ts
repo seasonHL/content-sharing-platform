@@ -1,7 +1,7 @@
 import { EMediaType } from "src/types";
 import { Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
 import { Post } from "./post.entity";
-import { Exclude, Expose } from "class-transformer";
+import { Exclude } from "class-transformer";
 
 /** 媒体实体类 */
 @Entity('media')
@@ -19,10 +19,8 @@ export class Media {
     @JoinColumn({ name: 'post_id' })  // 显式指定外键列名为 'post_id'
     post: Post;
     /** 关联的帖子 ID */
-    @Expose()// 暴露该属性
-    get post_id(): number {
-        return this.post?.post_id;
-    }
+    @Column({ nullable: true })
+    post_id: number;
     /** 媒体文件 URL（图片或视频） */
     @Column({ length: 255 })
     media_url: string;

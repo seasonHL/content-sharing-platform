@@ -15,4 +15,8 @@ export class MediaService extends BaseService<Media> {
             relations: ['post']
         });
     }
+
+    async saveImage(data: Pick<Media, 'media_url' | 'media_type'>) {
+        return await this.mediaRep.save(data);
+    }
 }

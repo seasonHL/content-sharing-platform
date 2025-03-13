@@ -1,6 +1,6 @@
-import { ConfigModuleOptions } from "@nestjs/config";
-import { TypeOrmModuleOptions } from "@nestjs/typeorm";
-import { Group, Media, Message, Post, Product, User, UserGroup, Conversation, Comment } from "src/entities";
+import { ConfigModule, ConfigModuleOptions, ConfigService } from "@nestjs/config";
+import { TypeOrmModule, TypeOrmModuleOptions } from "@nestjs/typeorm";
+import { join } from "path";
 
 export const typeormOptions: TypeOrmModuleOptions = {
     type: 'mysql',
@@ -9,9 +9,24 @@ export const typeormOptions: TypeOrmModuleOptions = {
     username: 'root',
     password: 'admin123',
     database: 'content_sharing_platform',
-    entities: [User, Post, Media, Message, Group, UserGroup, Product, Conversation, Comment],
+    entities: [join(__dirname, '../**', '*.entity{.ts,.js}')],
     synchronize: true,
 }
+
+export const TypeOrmConfigModule = TypeOrmModule.forRootAsync({
+    imports: [ConfigModule],
+    useFactory: (configService: ConfigService) => ({
+        type: 'mysql',
+        host: configService.get('DB_HOST'),
+        port: configService.get<number>('DB_PORT'),
+        username: configService.get('DB_USERNAME'),
+        password: configService.get('DB_PASSWORD'),
+        database: configService.get('DB_DATABASE'),
+        entities: [join(__dirname, '../**', '*.entity{.ts,.js}')],
+        synchronize: true,
+    }),
+    inject: [ConfigService],
+})
 
 export const configOptions: ConfigModuleOptions = {
     isGlobal: true,
