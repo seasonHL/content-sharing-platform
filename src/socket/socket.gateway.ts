@@ -1,8 +1,7 @@
 import { Logger } from '@nestjs/common';
-import { JwtService } from '@nestjs/jwt';
 import { ConnectedSocket, MessageBody, OnGatewayConnection, OnGatewayDisconnect, SubscribeMessage, WebSocketGateway, WebSocketServer } from '@nestjs/websockets';
 import type { Server, Socket } from 'socket.io';
-import { jwtOptions } from 'src/config';
+import { AuthService } from 'src/auth/auth.service';
 import { ConversationService } from 'src/conversation/conversation.service';
 import { MessageService } from 'src/message/message.service';
 import { MessageData } from 'src/types/socket';
@@ -17,7 +16,7 @@ export class SocketGateway implements OnGatewayConnection, OnGatewayDisconnect {
   /** 群组ID到用户ID的映射 */
   private groups: Map<string, string[]> = new Map();
   constructor(
-    private readonly jwtService: JwtService,
+    private readonly authService: AuthService,
     private readonly msgService: MessageService,
     private readonly userGroupService: UserGroupService,
     private readonly conversationService: ConversationService,
@@ -31,7 +30,7 @@ export class SocketGateway implements OnGatewayConnection, OnGatewayDisconnect {
       }
       Logger.log(`client connected: ${socket.id}`, 'SocketGateway')
       // 验证token
-      const payload = this.jwtService.verify(token, jwtOptions);
+      const payload = await this.authService.verifyToken(token);
       // 储存用户id
       socket.data.user_id = payload.user_id;
       this.users.set(payload.user_id, socket.id);

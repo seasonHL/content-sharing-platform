@@ -6,17 +6,16 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
-import { JwtService } from '@nestjs/jwt';
 import type { Request } from 'express';
 import { SetMetadata } from '@nestjs/common';
-import { jwtOptions } from 'src/config';
+import { AuthService } from './auth.service';
 
 export const IS_PUBLIC_KEY = 'isPublic';
 export const Public = () => SetMetadata(IS_PUBLIC_KEY, true);
 
 @Injectable()
 export class AuthGuard implements CanActivate {
-  constructor(private jwtService: JwtService, private reflector: Reflector) { }
+  constructor(private authService: AuthService, private reflector: Reflector) { }
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const isPublic = this.reflector.getAllAndOverride<boolean>(IS_PUBLIC_KEY, [
@@ -34,7 +33,7 @@ export class AuthGuard implements CanActivate {
       throw new UnauthorizedException('请先登录');
     }
     try {
-      const payload = await this.jwtService.verifyAsync(token, jwtOptions);
+      const payload = await this.authService.verifyToken(token);
       request['user'] = payload;
     } catch {
       throw new UnauthorizedException('登录已过期');
