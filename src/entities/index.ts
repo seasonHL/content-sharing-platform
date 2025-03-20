@@ -7,3 +7,4 @@ export { UserGroup } from "./userGroup.entity";
 export { Product } from './products.entity'
 export { Conversation } from './conversation.entity'
 export { EComment as Comment } from './comment.entity'
+export { Cart } from './cart.entity'

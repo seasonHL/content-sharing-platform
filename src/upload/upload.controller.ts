@@ -29,7 +29,8 @@ export class UploadController {
                 if (err) {
                     reject(err);
                 } else {
-                    resolve(key)
+                    const url = `https://${bucket}.cos.${region}.myqcloud.com/${key}`;
+                    resolve(url)
                 }
             })
         })

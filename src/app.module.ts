@@ -14,9 +14,10 @@ import { ProductModule } from './product/product.module';
 import { ConversationModule } from './conversation/conversation.module';
 import { CommentModule } from './comment/comment.module';
 import { UploadModule } from './upload/upload.module';
+import { CartModule } from './cart/cart.module';
 
 @Module({
-  imports: [ConfigModule.forRoot(configOptions), TypeOrmModule.forRoot(typeormOptions), UserModule, SocketModule, PostModule, MediaModule, AuthModule, MessageModule, GroupModule, UserGroupModule, ProductModule, ConversationModule, CommentModule, UploadModule],
+  imports: [ConfigModule.forRoot(configOptions), TypeOrmModule.forRoot(typeormOptions), UserModule, SocketModule, PostModule, MediaModule, AuthModule, MessageModule, GroupModule, UserGroupModule, ProductModule, ConversationModule, CommentModule, UploadModule, CartModule],
   controllers: [],
   providers: [],
 })
