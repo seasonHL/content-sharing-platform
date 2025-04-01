@@ -4,15 +4,24 @@ import * as path from 'path';
 import * as crypto from 'crypto';
 import { MediaService } from 'src/media/media.service';
 import { successResponse } from 'src/utils';
-import { cos } from 'src/config/cos';
+import * as COS from 'cos-nodejs-sdk-v5';
+import { ConfigService } from '@nestjs/config';
 
 @Controller('upload')
 export class UploadController {
     bucket = 'season-1313247063';
     region = 'ap-chengdu';
+    cos = new COS({});
     constructor(
         private readonly mediaService: MediaService,
-    ) { }
+        private readonly configService: ConfigService
+    ) {
+        // 从环境变量获取 SecretId 和 SecretKey，避免硬编码在代码中
+        this.cos = new COS({
+            SecretId: this.configService.get('COS_SECRET_ID'),
+            SecretKey: this.configService.get('COS_SECRET_KEY'),
+        });
+    }
     uploadCos = async (file: Express.Multer.File) => {
         const bucket = this.bucket;
         const region = this.region;
@@ -20,7 +29,7 @@ export class UploadController {
         const key = `uploads/${md5Hash}${path.extname(file.originalname)}`;
 
         return new Promise((resolve, reject) => {
-            cos.putObject({
+            this.cos.putObject({
                 Bucket: bucket,
                 Region: region,
                 Key: key,

@@ -58,7 +58,7 @@ export class SocketGateway implements OnGatewayConnection, OnGatewayDisconnect {
       ...data,
       sender_id: user_id
     }
-    // 储存消息
+    // 发送者储存消息
     this.msgService.saveMessage(msg)
     // 查找接收者的socket.id
     const receiverSocketId = this.users.get(data.receiver_id);
@@ -67,7 +67,8 @@ export class SocketGateway implements OnGatewayConnection, OnGatewayDisconnect {
       user_id: data.receiver_id,
       friend_id: user_id,
     })
-    if (conversation_id) {
+    // 接收者储存消息
+    if (conversation_id && data.conversation_id !== conversation_id) {
       this.msgService.saveMessage({ ...msg, conversation_id })
     }
     if (receiverSocketId) {

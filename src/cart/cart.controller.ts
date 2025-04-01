@@ -1,5 +1,6 @@
 import { Controller, Post, Get, Delete, Query, Body } from '@nestjs/common';
 import { CartService } from './cart.service';
+import { successResponse } from 'src/utils';
 
 @Controller('cart')
 export class CartController {
@@ -11,13 +12,15 @@ export class CartController {
         @Query('userId') userId: number,
         @Body('productIds') productIds: number[]
     ) {
-        return await this.cartService.addToCart(userId, productIds);
+        const res = await this.cartService.addToCart(userId, productIds);
+        return successResponse(res);
     }
 
     // 获取用户的购物车列表
     @Get('list')
     async getCartList(@Query('userId') userId: number) {
-        return await this.cartService.getCartList(userId);
+        const res = await this.cartService.getCartList(userId);
+        return successResponse(res);
     }
 
     // 从购物车中移除商品
@@ -26,6 +29,7 @@ export class CartController {
         @Query('cartId') cartId: number,
         @Query('productId') productId: number
     ) {
-        return await this.cartService.removeFromCart(cartId, productId);
+        const res = await this.cartService.removeFromCart(cartId, productId);
+        return successResponse(res);
     }
 }
