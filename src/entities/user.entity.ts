@@ -2,6 +2,7 @@ import { EGender } from "src/types";
 import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 import { Post } from "./post.entity";
 import { EComment } from "./comment.entity";
+import { Cart } from "./cart.entity";
 
 class UserRelation {
     /** 帖子列表，一对多关系 */
@@ -10,6 +11,9 @@ class UserRelation {
     /** 评论列表，一对多关系 */
     @OneToMany(() => EComment, (comment) => comment.user)
     comments: EComment[];
+    /** 购物车 */
+    @OneToMany(() => Cart, (cart) => cart.user)
+    carts: Cart[];
 }
 /** 用户实体类 */
 @Entity('users')

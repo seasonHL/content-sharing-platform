@@ -1,7 +1,14 @@
-import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, OneToMany } from 'typeorm';
+import { Cart } from './cart.entity';
+
+class ProductRelation {
+    /** 购物车 */
+    @OneToMany(() => Cart, (cart) => cart.products)
+    carts: Cart[];
+}
 
 @Entity('products')
-export class Product {
+export class Product extends ProductRelation {
     @PrimaryGeneratedColumn()
     id: number;
     /** 商品名称 */
