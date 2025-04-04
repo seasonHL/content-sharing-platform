@@ -2,6 +2,9 @@ import { Column, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryGeneratedColum
 import { Media } from "./media.entity";
 import { User } from "./user.entity";
 import { EComment } from "./comment.entity";
+import { Like } from "./like.entity";
+import { Expose, Transform } from "class-transformer";
+import { pick } from "src/utils";
 
 class PostRelation {
     /** 媒体关联，一对多关系，级联删除 */
@@ -14,6 +17,9 @@ class PostRelation {
     /** 评论关联，一对多关系 */
     @OneToMany(() => EComment, comment => comment.post)
     comments: EComment[];
+    /** 点赞关联，一对多关系 */
+    @OneToMany(() => Like, (like) => like.post)
+    likes: Like[];
 }
 /** 帖子实体类 */
 @Entity('posts')
@@ -39,4 +45,23 @@ export class Post extends PostRelation {
     /** 是否发布，布尔值，默认已发布 */
     @Column({ default: true })
     is_published: boolean;
+
+    isLiked: boolean;
+}
+
+export class PostDto extends Post {
+    @Transform(({ value }) => value.map(media => pick(media, ['media_url', 'media_type'])))
+    media: Media[];
+    @Transform(({ value }) => typeof value === 'object' ? value.length : value)
+    comments: EComment[];
+    @Transform(({ value }) => typeof value === 'object' ? value.length : value)
+    likes: Like[];
+    @Expose()
+    get commentCount() {
+        return this.comments
+    }
+    @Expose()
+    get likeCount() {
+        return this.likes
+    }
 }
