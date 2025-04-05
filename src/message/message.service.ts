@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { BaseService } from 'src/common/base.service';
-import { ConversationService } from 'src/conversation/conversation.service';
+import { Conversation, Post as PostEntity } from 'src/entities';
 import { Message } from 'src/entities/message.entity';
 import { MessageData } from 'src/types/socket';
 import { Repository } from 'typeorm';
@@ -10,7 +10,8 @@ import { Repository } from 'typeorm';
 export class MessageService extends BaseService<Message> {
     constructor(
         @InjectRepository(Message) private readonly messageRep: Repository<Message>,
-        private readonly conversationService: ConversationService,
+        @InjectRepository(PostEntity) private readonly postRep: Repository<PostEntity>,
+        @InjectRepository(Conversation) private readonly conversationRep: BaseService<Conversation>
     ) {
         super(messageRep);
     }
@@ -22,7 +23,7 @@ export class MessageService extends BaseService<Message> {
         const { conversation_id, } = data
         if (conversation_id) {
             this.messageRep.save(data)
-            this.conversationService.update({ conversation_id }, {
+            this.conversationRep.update({ conversation_id }, {
                 last_message: data.content,
                 updated_at: new Date(),
             })
@@ -33,7 +34,7 @@ export class MessageService extends BaseService<Message> {
         // 发送者储存消息
         this.saveMessage(msg)
         // 查找会话id
-        const { conversation_id } = await this.conversationService.findOne({
+        const { conversation_id } = await this.conversationRep.findOne({
             user_id: msg.receiver_id,
             friend_id: msg.sender_id,
         })
@@ -57,12 +58,30 @@ export class MessageService extends BaseService<Message> {
     /**
      * 获取消息列表
      */
-    async getMessageList(data: Pick<Message, 'receiver_id' | 'sender_id'>) {
-        return await this.messageRep.find({
+    async getMessageList({ page = 1, limit = 40, ...data }: Partial<Message> & {
+        page?: number,
+        limit?: number,
+    } = {}) {
+        const skip = (page - 1) * limit;
+        const list = await this.messageRep.find({
             where: data,
+            take: limit,
+            skip: skip,
             order: {
                 createdAt: 'DESC'
             }
         })
+        list.reverse()
+        return Promise.all(list.map(async item => {
+            const { post_id } = item
+            if (post_id) {
+                const post = await this.postRep.findOne({
+                    relations: { media: true },
+                    where: { post_id }
+                })
+                return { ...item, post }
+            }
+            return item
+        }))
     }
 }

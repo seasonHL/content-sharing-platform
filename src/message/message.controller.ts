@@ -10,7 +10,7 @@ export class MessageController {
     @SerializeOptions({ type: Message })
     @Get('list')
     getList() {
-        return this.messageService.findAll();
+        return this.messageService.getMessageList();
     }
     /**
      * @param id 消息 id
