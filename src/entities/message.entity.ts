@@ -35,4 +35,7 @@ export class Message extends MessageRelation {
     /** 会话 ID */
     @Column({ name: 'conversation_id' })
     conversation_id: number;
+    /** 关联的帖子 ID，用于转发帖子 */
+    @Column({ nullable: true })
+    post_id: number;
 }
