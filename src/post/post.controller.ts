@@ -11,6 +11,11 @@ export class PostController {
     @UseInterceptors(ClassSerializerInterceptor)
     @SerializeOptions({ type: PostDto })
     @Get('list')
+    /**
+     * 获取帖子列表
+     * @param query - 查询参数，包含分页信息
+     * @returns 返回帖子列表
+     */
     async getPostList(@Query() query) {
         const { page = 1, limit = 10 } = query;
         const posts = await this.postService.getPostList(page, limit);
@@ -18,12 +23,23 @@ export class PostController {
     }
 
     @Post('create')
+    /**
+     * 创建帖子
+     * @param data - 创建帖子所需的数据，类型为 ICreatePost
+     * @returns 返回创建帖子的结果
+     */
     async createPost(@Body() data: ICreatePost) {
         return await this.postService.createPostWithMedia(data);
     }
     @UseInterceptors(ClassSerializerInterceptor)
     @SerializeOptions({ type: PostDto })
     @Get('detail')
+    /**
+     * 获取帖子详情
+     * @param req - 请求对象，包含用户信息
+     * @param postId - 帖子的ID，从查询参数中获取
+     * @returns 返回指定帖子的详细信息
+     */
     async getPostDetail(@Req() req, @Query('post_id') postId: number) {
         const userId = req.user['user_id'];
         return await this.postService.getPostById(userId, postId);
@@ -55,8 +71,11 @@ export class PostController {
     }
 
     @Post('share')
-    async sharePost() {
-        return await this.postService.sharePost();
+    async sharePost(@Req() req, @Body() body) {
+        const sender_id = req.user['user_id'];
+        const { receiver_id, post_id } = body;
+        await this.postService.sharePost(sender_id, receiver_id, post_id);
+        return successResponse('帖子转发成功');
     }
 
     @Post('delete')
