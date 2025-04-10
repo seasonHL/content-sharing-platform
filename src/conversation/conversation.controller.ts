@@ -1,7 +1,7 @@
-import { Body, Controller, Get, Post, Query } from '@nestjs/common';
+import { Body, Controller, Get, Post, Query, Req } from '@nestjs/common';
 import { ConversationService } from './conversation.service';
 import { Conversation } from 'src/entities/conversation.entity';
-import { pick, successResponse } from 'src/utils';
+import { successResponse } from 'src/utils';
 
 @Controller('conversation')
 export class ConversationController {
@@ -11,32 +11,24 @@ export class ConversationController {
      */
     @Post('create')
     async createConversation(@Body() body: Conversation) {
-        console.log(body);
-        return await this.conversationService.saveOne(body);
+        return await this.conversationService.createConversation(body);
     }
     /**
      * 获取会话列表
      */
     @Get('list')
-    async getConversationList(@Query('user_id') user_id: number) {
-        let list = [];
-        if (user_id) {
-            list = await this.conversationService.findMany({
-                where: {
-                    user_id
-                }
-            });
-        } else {
-            list = await this.conversationService.findAll();
-        }
-        return successResponse(list);
+    async getConversationList(@Req() req) {
+        const { user_id } = req.user;
+        const res = await this.conversationService.getConversationList(user_id);
+        return successResponse(res);
     }
     /**
      * 获取会话详情
      */
     @Get('detail')
     async getConversationDetail(@Query('id') conversation_id: number) {
-        return await this.conversationService.getDetails(conversation_id);
+        const res = await this.conversationService.getDetails(conversation_id);
+        return successResponse(res);
     }
     /**
      * 删除会话
@@ -52,7 +44,8 @@ export class ConversationController {
      */
     @Post('update')
     async updateConversation(@Body() body: Conversation) {
-        await this.conversationService.update(pick(body, ['conversation_id']), body);
+        const { conversation_id } = body;
+        await this.conversationService.update(conversation_id, body);
         return successResponse('更新成功');
     }
 }

@@ -11,7 +11,7 @@ export class MessageService extends BaseService<Message> {
     constructor(
         @InjectRepository(Message) private readonly messageRep: Repository<Message>,
         @InjectRepository(PostEntity) private readonly postRep: Repository<PostEntity>,
-        @InjectRepository(Conversation) private readonly conversationRep: BaseService<Conversation>
+        @InjectRepository(Conversation) private readonly conversationRep: Repository<Conversation>
     ) {
         super(messageRep);
     }
@@ -19,7 +19,7 @@ export class MessageService extends BaseService<Message> {
     /**
      * 储存消息
      */
-    async saveMessage(data: Pick<Message, 'content' | 'receiver_id' | 'sender_id' | 'conversation_id'>) {
+    async saveMessage(data: MessageData) {
         const { conversation_id, } = data
         if (conversation_id) {
             this.messageRep.save(data)
@@ -31,16 +31,27 @@ export class MessageService extends BaseService<Message> {
         return true
     }
     async receiveMessage(msg: MessageData & Pick<Message, 'sender_id' | 'receiver_id'>) {
+        // 查找发送者会话id
+        const { conversation_id: senderConvId } = await this.conversationRep.findOne({
+            where: {
+                user_id: msg.sender_id,
+                friend_id: msg.receiver_id,
+            }
+        })
         // 发送者储存消息
-        this.saveMessage(msg)
-        // 查找会话id
-        const { conversation_id } = await this.conversationRep.findOne({
-            user_id: msg.receiver_id,
-            friend_id: msg.sender_id,
+        if (senderConvId) {
+            this.saveMessage({ ...msg, conversation_id: senderConvId })
+        }
+        // 查找接收者会话id
+        const { conversation_id: receiverConvId } = await this.conversationRep.findOne({
+            where: {
+                user_id: msg.receiver_id,
+                friend_id: msg.sender_id,
+            }
         })
         // 接收者储存消息
-        if (conversation_id && msg.conversation_id !== conversation_id) {
-            this.saveMessage({ ...msg, conversation_id })
+        if (receiverConvId) {
+            this.saveMessage({ ...msg, conversation_id: receiverConvId })
         }
     }
     /**
