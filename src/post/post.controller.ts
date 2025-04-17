@@ -19,7 +19,7 @@ export class PostController {
     async getPostList(@Query() query) {
         const { page = 1, limit = 10 } = query;
         const posts = await this.postService.getPostList(page, limit);
-        return posts;
+        return successResponse(posts);
     }
 
     @Post('create')

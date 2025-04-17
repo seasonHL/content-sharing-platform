@@ -32,7 +32,7 @@ export class UserController {
         if (!params.user_id) {
             throw new HttpException(failResponse('user_id is required'), HttpStatus.BAD_REQUEST);
         }
-        const user = await this.userService.findMany({ where: pick(params, ['user_id', 'username']) });
+        const user = await this.userService.findByUserId(params.user_id);
         return successResponse(user);
     }
 

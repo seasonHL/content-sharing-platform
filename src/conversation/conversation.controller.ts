@@ -11,7 +11,8 @@ export class ConversationController {
      */
     @Post('create')
     async createConversation(@Body() body: Conversation) {
-        return await this.conversationService.createConversation(body);
+        const res = await this.conversationService.createConversation(body);
+        return successResponse(res);
     }
     /**
      * 获取会话列表
