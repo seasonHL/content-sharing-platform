@@ -19,6 +19,12 @@ export class ProductController {
         return successResponse(list);
     }
 
+    @Get('search')
+    async searchProduct(@Query('keyword') keyword: string) {
+        const list = await this.productService.searchProduct(keyword);
+        return successResponse(list);
+    }
+
     @Get('detail')
     async getProductDetail(@Query('id') id: number) {
         const product = await this.productService.getProductDetail(id);

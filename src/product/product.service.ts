@@ -24,6 +24,13 @@ export class ProductService extends BaseService<Product> {
         return await this.repo.find();
     }
 
+    searchProduct(keyword: string) {
+        return this.repo.createQueryBuilder('product')
+            .where('product.name LIKE :keyword', { keyword: `%${keyword}%` })
+            .orWhere('product.description LIKE :keyword', { keyword: `%${keyword}%` })
+            .getMany();
+    }
+
     /**
      * 获取商品详情
      */

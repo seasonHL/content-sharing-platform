@@ -10,6 +10,16 @@ export class UserService extends BaseService<User> {
         super(userRep);
     }
 
+    async search(keyword: string, page: number = 1, limit: number = 10) {
+        const skip = (page - 1) * limit;
+        return this.userRep.createQueryBuilder('user')
+            .where('user.username LIKE :keyword OR user.email LIKE :keyword', { keyword: `%${keyword}%` })
+            .orWhere('user.user_id LIKE :keyword', { keyword: `%${keyword}%` })
+            .skip(skip)
+            .take(limit)
+            .getMany();
+    }
+
     async findByUserId(user_id: number): Promise<User | null> {
         return this.userRep.findOne({ where: { user_id } });
     }

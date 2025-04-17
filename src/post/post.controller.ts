@@ -21,6 +21,14 @@ export class PostController {
         const posts = await this.postService.getPostList(page, limit);
         return successResponse(posts);
     }
+    @UseInterceptors(ClassSerializerInterceptor)
+    @SerializeOptions({ type: PostDto })
+    @Get('search')
+    async searchPost(@Query() query) {
+        const { page = 1, limit = 10, keyword } = query;
+        const posts = await this.postService.searchPost(keyword, page, limit);
+        return successResponse(posts);
+    }
 
     @Post('create')
     /**

@@ -43,6 +43,21 @@ export class PostService {
 
         return posts
     }
+
+    async searchPost(keyword: string, page: number = 1, limit: number = 20) {
+        const skip = (page - 1) * limit;
+
+        const posts = await this.postRepository.createQueryBuilder('post')
+            .leftJoinAndSelect('post.media', 'media') // 关联媒体内容
+            .leftJoinAndSelect('post.author', 'author') // 关联作者信息
+            .leftJoinAndSelect('post.likes', 'likes') // 关联点赞信息
+            .where('post.content LIKE :keyword OR post.title LIKE :keyword', { keyword: `%${keyword}%` }) // 搜索标题或内容
+            .take(limit) // 每页数量
+            .skip(skip) // 跳过的记录数
+            .getMany(); // 获取查询结果
+
+        return posts;
+    }
     /**
      * 获取用户的所有帖子及其关联的媒体内容
      */

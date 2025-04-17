@@ -36,6 +36,13 @@ export class UserController {
         return successResponse(user);
     }
 
+    @Get('search')
+    async search(@Query() params) {
+        const { keyword, page, limit } = params;
+        const users = await this.userService.search(keyword, page, limit);
+        return successResponse(users);
+    }
+
     @Post('update')
     async update(@Body() body: User) {
         if (!body.user_id) {
