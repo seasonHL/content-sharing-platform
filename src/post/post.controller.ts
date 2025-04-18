@@ -17,8 +17,8 @@ export class PostController {
      * @returns 返回帖子列表
      */
     async getPostList(@Query() query) {
-        const { page = 1, limit = 10 } = query;
-        const posts = await this.postService.getPostList(page, limit);
+        const { page = 1, limit = 10, authorId } = query;
+        const posts = await (authorId ? this.postService.getPostsByUserId(authorId) : this.postService.getPostList(page, limit));
         return successResponse(posts);
     }
     @UseInterceptors(ClassSerializerInterceptor)

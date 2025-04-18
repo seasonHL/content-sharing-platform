@@ -63,8 +63,8 @@ export class PostService {
      */
     async getPostsByUserId(author_id: number) {
         return this.postRepository.find({
+            relations: ['author', 'media', 'likes'],
             where: { author_id },
-            relations: ['author', 'media', 'comments', 'likes'],
         });
     }
 
