@@ -65,3 +65,11 @@ export class PostDto extends Post {
         return this.likes
     }
 }
+
+export class PostListDto {
+    @Transform(({ value }) => value.map(post => ({
+        ...post,
+        likeCount: post.likes.length,
+    })))
+    data: PostDto[];
+}

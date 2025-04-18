@@ -2,14 +2,14 @@ import { Body, ClassSerializerInterceptor, Controller, Get, Param, Post, Query, 
 import { PostService } from './post.service';
 import { ICreatePost } from 'src/types/post';
 import { successResponse } from 'src/utils';
-import { PostDto } from 'src/entities/post.entity';
+import { PostDto, PostListDto } from 'src/entities/post.entity';
 
 @Controller('post')
 export class PostController {
     constructor(private readonly postService: PostService) { }
 
     @UseInterceptors(ClassSerializerInterceptor)
-    @SerializeOptions({ type: PostDto })
+    @SerializeOptions({ type: PostListDto })
     @Get('list')
     /**
      * 获取帖子列表
@@ -50,7 +50,8 @@ export class PostController {
      */
     async getPostDetail(@Req() req, @Query('post_id') postId: number) {
         const userId = req.user['user_id'];
-        return await this.postService.getPostById(userId, postId);
+        const res = await this.postService.getPostById(userId, postId);
+        return successResponse(res);
     }
 
     @Post('like')
