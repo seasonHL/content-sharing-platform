@@ -16,7 +16,8 @@ async function bootstrap() {
       configService
     });
   }
-
+  
+  app.enableCors();
   app.use(cookieParser());
   app.useGlobalPipes(new ValidationPipe());
   await app.listen(process.env.PORT ?? 3000);
