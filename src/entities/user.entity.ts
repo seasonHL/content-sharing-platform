@@ -3,6 +3,8 @@ import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 import { Post } from "./post.entity";
 import { EComment } from "./comment.entity";
 import { Cart } from "./cart.entity";
+import { Like } from "./like.entity";
+import { Exclude } from "class-transformer";
 
 class UserRelation {
     /** 帖子列表，一对多关系 */
@@ -14,6 +16,9 @@ class UserRelation {
     /** 购物车 */
     @OneToMany(() => Cart, (cart) => cart.user)
     carts: Cart[];
+    /** 点赞列表 */
+    @OneToMany(() => Like, (like) => like.user)
+    likes: Like[];
 }
 /** 用户实体类 */
 @Entity('users')
@@ -26,6 +31,7 @@ export class User extends UserRelation {
     @Column()
     username: string;
     /** 密码，最大长度255字符，不为空 */
+    @Exclude()
     @Column()
     password: string;
     /** 电子邮件，最大长度100字符，不为空 */

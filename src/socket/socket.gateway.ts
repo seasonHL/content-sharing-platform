@@ -58,19 +58,10 @@ export class SocketGateway implements OnGatewayConnection, OnGatewayDisconnect {
       ...data,
       sender_id: user_id
     }
-    // 发送者储存消息
-    this.msgService.saveMessage(msg)
+    // 处理接收的消息(储存消息)
+    this.msgService.receiveMessage(msg)
     // 查找接收者的socket.id
     const receiverSocketId = this.users.get(data.receiver_id);
-    // 查找会话id
-    const { conversation_id } = await this.conversationService.findOne({
-      user_id: data.receiver_id,
-      friend_id: user_id,
-    })
-    // 接收者储存消息
-    if (conversation_id && data.conversation_id !== conversation_id) {
-      this.msgService.saveMessage({ ...msg, conversation_id })
-    }
     if (receiverSocketId) {
       // 通过 receiverSocketId 向接收者发送消息
       this.server.to(receiverSocketId).emit('message', msg);
