@@ -51,7 +51,7 @@ export class UploadController {
     }))
     async uploadImage(@UploadedFile() file: Express.Multer.File) {
         const url = await this.uploadCos(file);
-        return successResponse(url);
+        return successResponse({ url });
     }
 
 
