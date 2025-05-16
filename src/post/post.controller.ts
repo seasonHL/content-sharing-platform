@@ -2,7 +2,7 @@ import { Body, ClassSerializerInterceptor, Controller, Get, Param, Post, Query, 
 import { PostService } from './post.service';
 import { ICreatePost } from 'src/types/post';
 import { successResponse } from 'src/utils';
-import { PostDto, PostListDto } from 'src/entities/post.entity';
+import { PostDto, PostListDto, Post as PostEntity } from 'src/entities/post.entity';
 
 @Controller('post')
 export class PostController {
@@ -39,6 +39,17 @@ export class PostController {
     async createPost(@Body() data: ICreatePost) {
         return await this.postService.createPostWithMedia(data);
     }
+
+@Post('update')
+/**
+ * 更新帖子
+ * @param postId - 帖子的ID，从查询参数中获取
+ * @param data - 更新帖子所需的数据
+ * @returns 返回更新后的帖子信息
+ */
+async updatePost(@Query('post_id') postId: number, @Body() data: Partial<PostEntity>) {
+    return await this.postService.updatePost(postId, data);
+}
     @UseInterceptors(ClassSerializerInterceptor)
     @SerializeOptions({ type: PostDto })
     @Get('detail')

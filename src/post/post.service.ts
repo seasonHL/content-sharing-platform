@@ -29,6 +29,32 @@ export class PostService {
         });
         return await this.postRepository.save(post);
     }
+
+/**
+ * 更新帖子
+ */
+async updatePost(postId: number, data: Partial<Post>): Promise<Post> {
+    const post = await this.postRepository.findOne({ where: { post_id: postId } });
+    if (!post) {
+        throw new BadRequestException('帖子不存在');
+    }
+    
+    // 更新帖子数据
+    Object.assign(post, data);
+    
+    // 如果有媒体数据需要更新，处理媒体逻辑
+    if (data.media) {
+        // 先删除原有媒体
+        await this.mediaRepository.delete({ post_id: postId });
+        
+        // 添加新媒体
+        post.media = data.media.map((mediaData) =>
+                this.mediaRepository.create(mediaData),
+            )
+    }
+    
+    return await this.postRepository.save(post);
+}
     /**
      * 获取所有帖子及其关联的媒体内容
      */
