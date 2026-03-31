@@ -1,8 +1,7 @@
 import { Module } from '@nestjs/common';
 import { UserModule } from './user/user.module';
 import { SocketModule } from './socket/socket.module';
-import { TypeOrmModule } from '@nestjs/typeorm';
-import { configOptions, typeormOptions } from './config';
+import { configOptions, TypeOrmConfigModule } from './config';
 import { PostModule } from './post/post.module';
 import { MediaModule } from './media/media.module';
 import { ConfigModule } from '@nestjs/config';
@@ -17,7 +16,7 @@ import { UploadModule } from './upload/upload.module';
 import { CartModule } from './cart/cart.module';
 
 @Module({
-  imports: [ConfigModule.forRoot(configOptions), TypeOrmModule.forRoot(typeormOptions), UserModule, SocketModule, PostModule, MediaModule, AuthModule, MessageModule, GroupModule, UserGroupModule, ProductModule, ConversationModule, CommentModule, UploadModule, CartModule],
+  imports: [ConfigModule.forRoot(configOptions), TypeOrmConfigModule, UserModule, SocketModule, PostModule, MediaModule, AuthModule, MessageModule, GroupModule, UserGroupModule, ProductModule, ConversationModule, CommentModule, UploadModule, CartModule],
   controllers: [],
   providers: [],
 })
