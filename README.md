@@ -35,6 +35,7 @@ BLOB_READ_WRITE_TOKEN=<your-vercel-blob-token>
 
 ```env
 POSTGRES_HOST=<your-supabase-host>
+POSTGRES_PORT=6543
 POSTGRES_USER=postgres
 POSTGRES_PASSWORD=<password>
 POSTGRES_DATABASE=postgres

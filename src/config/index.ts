@@ -39,13 +39,22 @@ export const TypeOrmConfigModule = TypeOrmModule.forRootAsync({
             };
         }
 
+        const host = configService.get<string>('POSTGRES_HOST') ?? configService.get<string>('DB_HOST');
+        const port =
+            configService.get<number>('POSTGRES_PORT') ??
+            configService.get<number>('DB_PORT') ??
+            6543;
+        const username = configService.get<string>('POSTGRES_USER') ?? configService.get<string>('DB_USERNAME');
+        const password = configService.get<string>('POSTGRES_PASSWORD') ?? configService.get<string>('DB_PASSWORD');
+        const database = configService.get<string>('POSTGRES_DATABASE') ?? configService.get<string>('DB_DATABASE') ?? 'postgres';
+
         return {
             type: 'postgres',
-            host: configService.get('POSTGRES_HOST', configService.get('DB_HOST')),
-            port: configService.get<number>('DB_PORT', 6543),
-            username: configService.get('POSTGRES_USER', configService.get('DB_USERNAME')),
-            password: configService.get('POSTGRES_PASSWORD', configService.get('DB_PASSWORD')),
-            database: configService.get('POSTGRES_DATABASE', configService.get('DB_DATABASE', 'postgres')),
+            host,
+            port,
+            username,
+            password,
+            database,
             entities: [join(__dirname, '../**', '*.entity{.ts,.js}')],
             synchronize: true,
             ssl: shouldUseSsl
