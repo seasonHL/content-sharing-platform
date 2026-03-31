@@ -2,7 +2,7 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { ConfigService } from '@nestjs/config';
 import { initSwaggerDocument } from './swagger';
-import * as cookieParser from 'cookie-parser';
+import cookieParser = require('cookie-parser');
 import { ValidationPipe } from '@nestjs/common';
 
 async function bootstrap() {
