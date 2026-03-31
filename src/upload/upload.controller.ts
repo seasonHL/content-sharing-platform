@@ -16,6 +16,9 @@ export class UploadController {
         const md5Hash = crypto.createHash('md5').update(file.buffer).digest('hex');
         const key = `uploads/${md5Hash}${path.extname(file.originalname)}`;
         const token = this.configService.get<string>('BLOB_READ_WRITE_TOKEN');
+        if (!token) {
+            throw new Error('Missing env: BLOB_READ_WRITE_TOKEN');
+        }
 
         const result = await put(key, file.buffer, {
             access: 'public',

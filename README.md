@@ -27,6 +27,7 @@ DB_SSL=true
 环境变量：
 
 ```env
+# 变量名固定为 BLOB_READ_WRITE_TOKEN
 BLOB_READ_WRITE_TOKEN=<your-vercel-blob-token>
 ```
 
